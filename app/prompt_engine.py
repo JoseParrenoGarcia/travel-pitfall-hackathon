@@ -27,7 +27,7 @@ Response:
   "valid": false,
   "suggested_city": "London",
   "suggested_country": "United Kingdom",
-  "message": "Did you mean 'London' in the United Kingdom?"
+  "message": "⚠️ Did you mean **London** in the United Kingdom?"
 }}
 
 ### Example 2 – Correct City, Wrong Country
@@ -37,37 +37,28 @@ Response:
   "valid": false,
   "suggested_city": "London",
   "suggested_country": "United Kingdom",
-  "message": "London is in the United Kingdom, not Germany."
+  "message": "⚠️ I think you are referring to **London** which is in the **United Kingdom**, not in ***Germany.***"
 }}
 
-### Example 3 – City Exists in Multiple Countries
-Input: City = "Springfield", Country = "USA"
-Response:
-{{
-  "valid": true,
-  "suggested_city": "Springfield",
-  "suggested_country": "USA",
-  "message": "Note: Springfield exists in multiple U.S. states and also in Canada and Australia. Please confirm the intended country."
-}}
-
-### Example 4 – Correct Input
+### Example 3 – Correct Input
 Input: City = "Tokyo", Country = "Japan"
 Response:
 {{
   "valid": true,
   "suggested_city": "Tokyo",
   "suggested_country": "Japan",
-  "message": "Tokyo in Japan is valid."
+  # "message": "Tokyo in Japan is valid."
+  "message": "✅ Looks like we are on the same page. I recognize both **Tokyo** and **Japan** as a valid combo. Ready when you are!" 
 }}
 
-### Example 5 – Non-existent City
+### Example 4 – Non-existent City
 Input: City = "Bratwurstia", Country = "Germany"
 Response:
 {{
   "valid": false,
   "suggested_city": null,
   "suggested_country": null,
-  "message": "Bratwurstia does not appear to be a real city in Germany."
+  "message": "⚠️ Bratwurstia does not appear to be a real city in Germany."
 }}
 
 Now validate this location:
