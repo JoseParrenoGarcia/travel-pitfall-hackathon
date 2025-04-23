@@ -5,6 +5,16 @@ from prompt_engine import validate_location
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="What Not to Do", layout="wide")
 
+# --- SESSION STATE DEFAULTS ---
+if "validation" not in st.session_state:
+    st.session_state.validation = None
+if "city" not in st.session_state:
+    st.session_state.city = ""
+if "country" not in st.session_state:
+    st.session_state.country = ""
+if "confirmed" not in st.session_state:
+    st.session_state.confirmed = False
+
 # --- HEADER ---
 st.title("What Not to Do – Travel Pitfall Briefing")
 st.markdown("#### Avoid scams, cultural faux pas, and travel safety slip-ups – before they happen.")
@@ -14,7 +24,7 @@ with st.form("input_form", border=True):
     col1, col2, col3, col4 = st.columns([1, 1, 1, 2])  # wider inputs, slimmer button
 
     with col1:
-        city = st.text_input("City", value="London", placeholder="e.g. London")
+        city = st.text_input("City", value=st.session_state.city or "London", placeholder="e.g. London")
 
     with col2:
         country_options = [
@@ -24,22 +34,28 @@ with st.form("input_form", border=True):
         default_index = country_options.index(default_country)
         country = st.selectbox("Country", country_options, index=default_index)
 
-    with col3:
-        tone = st.selectbox("Tone", ["Serious", "Snarky", "Funny"])
+    # with col3:
+    #     tone = st.selectbox("Tone", ["Serious", "Snarky", "Funny"])
 
     submitted = st.form_submit_button("Validate")
+    if submitted:
+        st.session_state.city = city
+        st.session_state.country = country
+        st.session_state.validation = validate_location(city, country)
+        st.session_state.confirmed = False  # Reset confirmation after new validation
 
 # --- VALIDATION SECTION ---
-confirmed = False
-if submitted:
+if st.session_state.validation:
     with st.container(border=True):
-        st.markdown("### Just making sure we're on the same page...")
+        st.markdown("##### Just making sure we are on the same page...")
         validation = validate_location(city, country)
         st.write(validation)
-        #
-        # if validation["valid"]:
-        #     st.success(f"✅ {validation['message']}")
-        #     confirmed = True
+
+        if st.session_state.validation["valid"]:
+            st.success(f"✅ Looks like we're on the same page.  I recognize both [{st.session_state.city}] and [{st.session_state.country}] as a valid combo. Ready when you are!")
+
+            if st.button("Proceed to tips", key="confirmed_button"):
+                st.session_state.confirmed = True
         # else:
         #     st.warning(f"⚠️ {validation['message']}")
         #     st.info("Please revise your input and try again.")

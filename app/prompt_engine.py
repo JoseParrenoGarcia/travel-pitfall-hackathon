@@ -1,4 +1,5 @@
 from openai import OpenAI
+from utils import safe_json_parse
 import streamlit as st
 
 
@@ -74,6 +75,8 @@ Input: City = "{city}", Country = "{country}"
 Respond only in JSON. Do not explain anything else.
 """
 
+
+@st.cache_data(show_spinner=False)
 def validate_location(city: str, country: str) -> dict:
     prompt = build_location_validation_prompt(city, country)
 
@@ -87,15 +90,18 @@ def validate_location(city: str, country: str) -> dict:
     )
 
     content = response.choices[0].message.content
-    try:
-        parsed = eval(content)  # safe-ish since we're controlling output
-        return parsed
-    except Exception:
-        return {
-            "valid": False,
-            "suggested_city": None,
-            "suggested_country": None,
-            "message": "Could not parse GPT validation output.",
-            "raw": content
-        }
+    return safe_json_parse(content)
+    # parsed_content = json.loads(content)
+    # return parsed_content
+    # try:
+    #     parsed = eval(content)  # safe-ish since we're controlling output
+    #     return parsed
+    # except Exception:
+    #     return {
+    #         "valid": False,
+    #         "suggested_city": None,
+    #         "suggested_country": None,
+    #         "message": "Could not parse GPT validation output.",
+    #         "raw": content
+    #     }
 

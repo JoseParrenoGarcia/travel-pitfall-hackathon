@@ -1,3 +1,24 @@
+import json
+import re
+
+def safe_json_parse(raw: str) -> dict:
+    """
+    Tries to clean and parse a GPT-style JSON string.
+    Strips markdown code blocks and parses JSON safely.
+    """
+    try:
+        # Remove any ```json or ``` wrapping
+        cleaned = re.sub(r"^```(json)?|```$", "", raw.strip(), flags=re.MULTILINE)
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        return {
+            "valid": False,
+            "suggested_city": None,
+            "suggested_country": None,
+            "message": "Could not parse GPT response.",
+            "raw": raw
+        }
+
 country_list = [
     {"name": "Aruba", "code": "AW", "flag": "🇦🇼"},
     {"name": "Afghanistan", "code": "AF", "flag": "🇦🇫"},
