@@ -60,3 +60,4 @@ if st.session_state.validation:
             st.warning(st.session_state.validation['message'])
             st.info("Please revise your input and try again.")
 
+

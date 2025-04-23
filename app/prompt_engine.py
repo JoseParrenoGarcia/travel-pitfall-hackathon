@@ -82,17 +82,4 @@ def validate_location(city: str, country: str) -> dict:
 
     content = response.choices[0].message.content
     return safe_json_parse(content)
-    # parsed_content = json.loads(content)
-    # return parsed_content
-    # try:
-    #     parsed = eval(content)  # safe-ish since we're controlling output
-    #     return parsed
-    # except Exception:
-    #     return {
-    #         "valid": False,
-    #         "suggested_city": None,
-    #         "suggested_country": None,
-    #         "message": "Could not parse GPT validation output.",
-    #         "raw": content
-    #     }
 
