@@ -52,11 +52,12 @@ if st.session_state.validation:
         st.write(validation)
 
         if st.session_state.validation["valid"]:
-            st.success(f"✅ Looks like we're on the same page.  I recognize both [{st.session_state.city}] and [{st.session_state.country}] as a valid combo. Ready when you are!")
+            st.success(st.session_state.validation["message"])
 
             if st.button("Proceed to tips", key="confirmed_button"):
                 st.session_state.confirmed = True
-        # else:
-        #     st.warning(f"⚠️ {validation['message']}")
-        #     st.info("Please revise your input and try again.")
+        else:
+            st.warning(st.session_state.validation['message'])
+            st.info("Please revise your input and try again.")
+
 
