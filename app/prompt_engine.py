@@ -47,8 +47,6 @@ Response:
   "valid": true,
   "suggested_city": "Tokyo",
   "suggested_country": "Japan",
-  # "message": "Tokyo in Japan is valid."
-  "message": "✅ Looks like we are on the same page. I recognize both **Tokyo** and **Japan** as a valid combo. Ready when you are!" 
 }}
 
 ### Example 4 – Non-existent City
