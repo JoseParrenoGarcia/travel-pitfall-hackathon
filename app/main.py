@@ -18,7 +18,6 @@ if "confirmed" not in st.session_state:
 # --- HEADER ---
 st.title("What Not to Do – Travel Pitfall Briefing")
 st.markdown("#### Avoid scams, cultural faux pas, and travel safety slip-ups – before they happen.")
-st.markdown("---")
 
 with st.form("input_form", border=True):
     col1, col2, col3, col4 = st.columns([1, 1, 1, 2])  # wider inputs, slimmer button
@@ -63,8 +62,7 @@ if st.session_state.validation:
 # --- SNAPSHOT SECTION ---
 if st.session_state.confirmed:
     with st.container(border=True):
-        st.markdown("---")
-        st.markdown("#### Destination Snapshot")
+        st.markdown("##### Destination Snapshot")
 
         # snippet = generate_city_snippet(city, country, tone)
 
