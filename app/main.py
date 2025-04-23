@@ -60,4 +60,24 @@ if st.session_state.validation:
             st.warning(st.session_state.validation['message'])
             st.info("Please revise your input and try again.")
 
+# --- SNAPSHOT SECTION ---
+if st.session_state.confirmed:
+    with st.container(border=True):
+        st.markdown("---")
+        st.markdown("#### Destination Snapshot")
+
+        # snippet = generate_city_snippet(city, country, tone)
+
+        # col1, col2, col3 = st.columns(3)
+        # with col1:
+        #     st.markdown(f"**City:** {city}")
+        #     st.markdown(f"**Country:** {country}")
+        #     st.markdown(f"_{snippet}_")
+        #
+        # with col2:
+        #     st.image("assets/city_placeholder.png", caption="City view")
+        #
+        # with col3:
+        #     st.image("assets/map_placeholder.png", caption="Map location")
+
 

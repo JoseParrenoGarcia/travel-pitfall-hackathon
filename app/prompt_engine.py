@@ -47,6 +47,7 @@ Response:
   "valid": true,
   "suggested_city": "Tokyo",
   "suggested_country": "Japan",
+  "message": "✅ Looks like we are on the same page! I recognise **Tokyo** as a city in **Japan**."
 }}
 
 ### Example 4 – Non-existent City
