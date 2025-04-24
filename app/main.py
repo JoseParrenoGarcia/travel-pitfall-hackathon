@@ -1,6 +1,7 @@
 import streamlit as st
+from typing import Dict
 from utils import country_list  # assumed list of 200-ish countries
-from prompt_engine import validate_location, generate_city_snippet
+from prompt_engine import validate_location, generate_city_snippet, fetch_tips
 from image_downloader import get_city_image_url
 from map_downloader import geocode_city, get_osm_static_map
 
@@ -99,4 +100,41 @@ if st.session_state.confirmed:
             lat, lon = geocode_city(city=city, country=st.session_state.validation["suggested_country"])
             st.image(get_osm_static_map(lat, lon), caption="Map location", use_container_width=True)
 
+def format_bullet_dict(items: Dict[str, str]) -> str:
+    if not items:
+        return "_No tips available._"
+    # Sort by key to ensure correct order
+    sorted_items = [items[key] for key in sorted(items.keys(), key=int)]
+    return "\n".join(f"- {item}" for item in sorted_items)
+
+# --- OUTPUT SECTION ---
+if st.session_state.confirmed:
+    with st.spinner("Fetching your briefing..."):
+        tips = fetch_tips(city, country)
+        # st.write(output_text)
+
+    # TEMP: until formatter is built, show raw output
+    with st.container(border=True):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown("##### 🚕 Transport")
+            st.markdown(format_bullet_dict(tips.get("transport", {})))
+        with col2:
+            st.markdown("##### 🍽️ Food")
+            st.markdown(format_bullet_dict(tips.get("food", {})))
+        with col3:
+            st.markdown("##### 💰 Money")
+            st.markdown(format_bullet_dict(tips.get("money", {})))
+
+    with st.container(border=True):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown("##### 🌍 Culture")
+            st.markdown(format_bullet_dict(tips.get("culture", {})))
+        with col2:
+            st.markdown("##### 🛡️ Safety")
+            st.markdown(format_bullet_dict(tips.get("safety", {})))
+        with col3:
+            st.markdown("##### 🏥 Health")
+            st.markdown(format_bullet_dict(tips.get("health", {})))
 
