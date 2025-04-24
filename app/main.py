@@ -100,3 +100,26 @@ if st.session_state.confirmed:
             st.image(get_osm_static_map(lat, lon), caption="Map location", use_container_width=True)
 
 
+# --- OUTPUT SECTION ---
+if st.session_state.confirmed:
+    # with st.spinner("Fetching your briefing..."):
+        # output_text = fetch_tips(destination, tone)
+        # Optionally post-process into sections:
+        # scams, etiquette, safety = format_output_sections(output_text)
+
+    # TEMP: until formatter is built, show raw output
+    with st.container(border=True):
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown("##### Watch out")
+            st.divider()
+            st.markdown("...")  # Replace with scams
+        with col2:
+            st.markdown("##### Mind your manners")
+            st.divider()
+            st.markdown("...")  # Replace with etiquette
+        with col3:
+            st.markdown("##### Stay safe")
+            st.divider()
+            st.markdown("...")  # Replace with safety
+
