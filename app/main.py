@@ -82,7 +82,7 @@ if st.session_state.confirmed:
                     """,
                     unsafe_allow_html=True
                 )
-                # st.image(image_url, caption=f"Photo by {attribution['photographer']} on Unsplash", use_container_width=True)
+
                 st.markdown(
                     f"""
                     <div style="text-align: center;">
