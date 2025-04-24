@@ -82,3 +82,29 @@ def validate_location(city: str, country: str) -> dict:
     content = response.choices[0].message.content
     return safe_json_parse(content)
 
+
+# --- PROMPT TEMPLATE FOR CITY SNIPPET ---
+def build_city_snippet_prompt(city: str, country: str) -> str:
+    return f"""
+You are a travel guide assistant.
+
+Describe the city "{city}" in "{country}" in one paragraph.
+Make it engaging and friendly, like a travel brochure.
+Avoid safety tips, scams, or etiquette. Focus only on the vibe, landmarks, or general character of the place.
+Keep the description under 200 words.
+"""
+
+@st.cache_data(show_spinner=False)
+def generate_city_snippet(city: str, country: str) -> str:
+    prompt = build_city_snippet_prompt(city, country)
+
+    response = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=[
+            {"role": "system", "content": "You are a helpful travel guide assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.8,
+    )
+
+    return response.choices[0].message.content.strip()

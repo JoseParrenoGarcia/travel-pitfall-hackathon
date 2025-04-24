@@ -1,6 +1,7 @@
 import streamlit as st
 from utils import country_list  # assumed list of 200-ish countries
-from prompt_engine import validate_location
+from prompt_engine import validate_location, generate_city_snippet
+from image_downloader import get_city_image_url
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="What Not to Do", layout="wide")
@@ -20,7 +21,7 @@ st.title("What Not to Do – Travel Pitfall Briefing")
 st.markdown("#### Avoid scams, cultural faux pas, and travel safety slip-ups – before they happen.")
 
 with st.form("input_form", border=True):
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 2])  # wider inputs, slimmer button
+    col1, col2, col3 = st.columns([1, 1, 4])  # wider inputs, slimmer button
 
     with col1:
         city = st.text_input("City", value=st.session_state.city or "London", placeholder="e.g. London")
@@ -32,9 +33,6 @@ with st.form("input_form", border=True):
         default_country = "🇬🇧 - United Kingdom (GB)"
         default_index = country_options.index(default_country)
         country = st.selectbox("Country", country_options, index=default_index)
-
-    # with col3:
-    #     tone = st.selectbox("Tone", ["Serious", "Snarky", "Funny"])
 
     submitted = st.form_submit_button("Validate")
     if submitted:
@@ -48,7 +46,6 @@ if st.session_state.validation:
     with st.container(border=True):
         st.markdown("##### Just making sure we are on the same page...")
         validation = validate_location(city, country)
-        st.write(validation)
 
         if st.session_state.validation["valid"]:
             st.success(st.session_state.validation["message"])
@@ -64,15 +61,31 @@ if st.session_state.confirmed:
     with st.container(border=True):
         st.markdown("##### Destination Snapshot")
 
-        # snippet = generate_city_snippet(city, country, tone)
+        snippet = generate_city_snippet(city, country)
 
-        # col1, col2, col3 = st.columns(3)
-        # with col1:
-        #     st.markdown(f"**City:** {city}")
-        #     st.markdown(f"**Country:** {country}")
-        #     st.markdown(f"_{snippet}_")
-        #
-        # with col2:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(f"**City:** {city}")
+            st.markdown(f"**Country:** {country}")
+            st.markdown(f"_{snippet}_")
+
+        with col2:
+            image_url, attribution = get_city_image_url(city)
+            if image_url:
+                st.image(image_url, caption=f"Photo by {attribution['photographer']} on Unsplash", use_container_width=True)
+                st.markdown(
+                    f"""
+                    <div style="text-align: center;">
+                        Source: <a href="{attribution['profile_url']}" target="_blank">Unsplash</a>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+                # st.markdown(f"Source: [Unsplash]({attribution['profile_url']})")
+            else:
+                st.write("No image available.")
+            # img_url = get_city_image_url(city)
+            # st.image(img_url, caption=f"{city} view", use_column_width=True)
         #     st.image("assets/city_placeholder.png", caption="City view")
         #
         # with col3:
