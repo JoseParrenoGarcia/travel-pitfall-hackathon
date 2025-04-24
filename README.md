@@ -29,7 +29,7 @@ An AI-powered travel assistant that helps you avoid scams, etiquette slip-ups, a
 
 ## 📸 Preview
 
-- screenshot required
+![App Demo](assets/APP-video.gif)
 
 ---
 
