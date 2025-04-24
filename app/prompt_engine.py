@@ -108,3 +108,56 @@ def generate_city_snippet(city: str, country: str) -> str:
     )
 
     return response.choices[0].message.content.strip()
+
+def build_travel_tips_prompt(city: str, country: str) -> str:
+    return f"""
+You are a travel safety and culture assistant. The user is visiting {city} in {country}.
+
+Provide a structured JSON response with exactly these six fields:
+- "transport": Tips on navigating the city, safe/unsafe areas, taxis, apps, strikes, cycling, driving customs.
+- "food": Local food culture, tipping habits, tap water safety, what to eat or avoid, dining etiquette.
+- "money": Payment methods, local currency traps, scams, where to exchange, when to use cash vs card.
+- "culture": Language customs, local gestures, noise levels, queuing habits, clothing norms, taboos, alcohol, pork or cow meat.
+- "safety": General safety tips, avoiding theft, safe areas, travel insurance, solo travel awareness.
+- "health": Hydration, sun protection, heat risks, first aid, pharmacies, vaccinations, bottled vs tap water.
+
+Each field should contain 5 concise bullet points. If not enough relevant advice exists for that theme in this location, include fewer — but never fabricate tips.
+
+Be **local**, **practical**, and **direct** — not generic. Include:
+- Specific local behaviors (“stand on the right side of the escalator”)
+- Typical red flags (“menu with pictures in tourist zones = avoid”)
+- Local insider tips (“paella doesn’t have chorizo”)
+- Avoid generic advice
+- Do not invent scams. Only include well-known scams or typical tourist traps that are reasonably likely in {city}. If unsure, omit it.
+- Avoid repeating advice across sections. If you mention a taxi app under “Safety”, don’t mention it again under “Scams”.
+
+Here are some common themes and examples to inspire your bullet points:
+
+- Transport: taxi apps, metro etiquette, transport strikes, left/right driving, bike safety, ride scams.
+- Brands: When recommending tools or services (e.g. taxi apps), use specific brand names that are known and local — e.g. Cabify in Spain, Grab in SE Asia, Bolt in Eastern Europe, Uber in the UK/US.
+- Food & Drink: tipping, restaurant red flags, authentic vs. tourist menus, local dishes, tap water is accepted (or the default is bottled water), Tripadvisor is your best friend.
+- Money: cash vs card, ATM scams, dynamic currency conversion, overcharging.
+- Culture: dress code, noise levels, queueing, political sensitivity, language etiquette.
+- Safety: pickpockets, dangerous areas, solo traveler tips, late-night travel.  
+- Health:  sun cream and cap, avoid midday high temperatures, ensure you have medical coverage, tap water safety.
+- Tourist traps: photo scams, fake tickets, street performers, bracelet scammers.
+
+Write in a **natural, friendly tone**, like you’re giving real advice to a smart friend. Do not include intros or explanations — just return pure JSON.
+"""
+
+
+@st.cache_data(show_spinner=False)
+def fetch_tips(city: str, country: str) -> dict:
+    prompt = build_travel_tips_prompt(city, country)
+
+    response = client.chat.completions.create(
+        model=OPENAI_MODEL,
+        messages=[
+            {"role": "system", "content": "You are a helpful travel safety assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.7,
+    )
+
+    content = response.choices[0].message.content
+    return safe_json_parse(content)
