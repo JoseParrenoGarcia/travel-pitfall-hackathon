@@ -138,3 +138,19 @@ if st.session_state.confirmed:
             st.markdown("##### 🏥 Health")
             st.markdown(format_bullet_dict(tips.get("health", {})))
 
+st.markdown(
+    """
+    <div style='
+        background-color: #e6f0fa;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: #003366;
+    '>
+        💙 Brought to you with love by your friendly neighbourhood <strong>Skyscanner Hackathon</strong> team.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
