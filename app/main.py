@@ -2,6 +2,7 @@ import streamlit as st
 from utils import country_list  # assumed list of 200-ish countries
 from prompt_engine import validate_location, generate_city_snippet
 from image_downloader import get_city_image_url
+from map_downloader import geocode_city, get_osm_static_map
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="What Not to Do", layout="wide")
@@ -72,7 +73,16 @@ if st.session_state.confirmed:
         with col2:
             image_url, attribution = get_city_image_url(city)
             if image_url:
-                st.image(image_url, caption=f"Photo by {attribution['photographer']} on Unsplash", use_container_width=True)
+                st.markdown(
+                    f"""
+                    <div style="text-align: center;">
+                        <img src="{image_url}" alt="Photo by {attribution['photographer']} on Unsplash" style="height:420px; width:auto;">
+                        <p>Photo by {attribution['photographer']} on Unsplash</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+                # st.image(image_url, caption=f"Photo by {attribution['photographer']} on Unsplash", use_container_width=True)
                 st.markdown(
                     f"""
                     <div style="text-align: center;">
@@ -81,14 +91,12 @@ if st.session_state.confirmed:
                     """,
                     unsafe_allow_html=True
                 )
-                # st.markdown(f"Source: [Unsplash]({attribution['profile_url']})")
             else:
                 st.write("No image available.")
-            # img_url = get_city_image_url(city)
-            # st.image(img_url, caption=f"{city} view", use_column_width=True)
-        #     st.image("assets/city_placeholder.png", caption="City view")
-        #
-        # with col3:
-        #     st.image("assets/map_placeholder.png", caption="Map location")
+
+
+        with col3:
+            lat, lon = geocode_city(city=city, country=st.session_state.validation["suggested_country"])
+            st.image(get_osm_static_map(lat, lon), caption="Map location", use_container_width=True)
 
 
